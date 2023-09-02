@@ -1,0 +1,157 @@
+"""Auth Views."""
+# Standard Python Libraries
+from datetime import datetime, timedelta
+
+# Third-Party Libraries
+import botocore
+from flask import g, jsonify, request
+from flask.views import MethodView
+
+# khulnasoft-lab Libraries
+from api.config import logger
+from api.manager import LogManager, UserManager
+from utils.aws.clients import Cognito
+from utils.logs import cleanup_logs
+from utils.notifications import Notification
+
+user_manager = UserManager()
+log_manager = LogManager()
+cognito = Cognito()
+
+
+class RegisterView(MethodView):
+    """RegisterView."""
+
+    def post(self):
+        """Register a user."""
+        try:
+            data = request.json
+            username = data["Username"]
+            password = data["Password"]
+            email = data["Email"]
+
+            g.username = "Registration"
+            cognito.sign_up(username, password, email)
+            user = cognito.get_user(username)
+            user["Email"] = email
+            user["Groups"] = []
+            user["Groups"].append(
+                {
+                    "GroupName": data["ApplicationName"],
+                    "Application_Id": data["ApplicationId"],
+                }
+            )
+            user_manager.save(user)
+
+            email = Notification(
+                message_type="user_registered",
+                context={
+                    "new_user": data["Username"],
+                    "application": data["ApplicationName"],
+                },
+            )
+            email.send()
+
+            cognito.auto_verify_user_email(username=username)
+
+            return jsonify(success=True), 200
+        except botocore.exceptions.ClientError as e:
+            logger.exception(e)
+            return e.response["Error"]["Message"], 400
+
+
+class SignInView(MethodView):
+    """SignInView."""
+
+    def post(self):
+        """Sign In User."""
+        data = request.json
+        username = data["username"]
+        password = data["password"]
+
+        try:
+            response = cognito.authenticate(username, password)
+        except botocore.exceptions.ClientError as e:
+            logger.exception(e)
+            return e.response["Error"]["Message"], 400
+
+        expires = datetime.utcnow() + timedelta(
+            seconds=response["AuthenticationResult"]["ExpiresIn"]
+        )
+
+        cleanup_logs(username)
+        return jsonify(
+            {
+                "id_token": response["AuthenticationResult"]["IdToken"],
+                "refresh_token": response["AuthenticationResult"]["RefreshToken"],
+                "expires_at": expires,
+                "username": username,
+            }
+        )
+
+
+class ResetPasswordView(MethodView):
+    """Reset User Password."""
+
+    def post(self, username):
+        """Enter a New Password and Email Confirmation Code."""
+        post_data = request.json
+
+        user = user_manager.get(filter_data={"Username": username})
+        if not user:
+            return jsonify({"error": "User does not exist."}), 400
+
+        try:
+            cognito.confirm_forgot_password(
+                username=username,
+                confirmation_code=post_data["confirmation_code"],
+                password=post_data["password"],
+            )
+        except botocore.exceptions.ClientError as e:
+            logger.exception(e)
+            return e.response["Error"]["Message"], 400
+        return jsonify({"success": "User password has been reset."}), 200
+
+    def get(self, username):
+        """Trigger a Password Reset."""
+        user = user_manager.get(filter_data={"Username": username})
+        if not user:
+            return jsonify({"error": "User does not exist."}), 400
+
+        try:
+            cognito.reset_password(username=username)
+        except botocore.exceptions.ClientError as e:
+            logger.exception(e)
+            try:
+                cognito.auto_verify_user_email(username=username)
+                cognito.reset_password(username=username)
+            except botocore.exceptions.ClientError as e:
+                return e.response["Error"]["Message"], 400
+        return jsonify({"success": "An email with a reset code has been sent."}), 200
+
+
+class RefreshTokenView(MethodView):
+    """Refresh User Token."""
+
+    def post(self):
+        """Refresh user token."""
+        data = request.json
+        username = data["username"]
+        refresh_token = data["refeshToken"]
+        try:
+            response = cognito.refresh(refresh_token)
+        except botocore.exceptions.ClientError as e:
+            return e.response["Error"]["Message"], 403
+        expires = datetime.utcnow() + timedelta(
+            seconds=response["AuthenticationResult"]["ExpiresIn"]
+        )
+
+        cleanup_logs(username)
+        return jsonify(
+            {
+                "id_token": response["AuthenticationResult"]["IdToken"],
+                "refresh_token": refresh_token,
+                "expires_at": expires,
+                "username": username,
+            }
+        )

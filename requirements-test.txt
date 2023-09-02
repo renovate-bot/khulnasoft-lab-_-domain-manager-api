@@ -1,0 +1,13 @@
+--requirement requirements.txt
+black
+coverage
+flake8
+moto
+pre-commit
+pytest
+pytest-cov
+pytest-dockerc
+pytest-dotenv
+pytest-env
+pytest-mock
+pytest-pythonpath

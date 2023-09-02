@@ -1,0 +1,182 @@
+"""Template Views."""
+# Standard Python Libraries
+import io
+import shutil
+import urllib
+
+# Third-Party Libraries
+from faker import Faker
+from flask import g, jsonify, request, send_file
+from flask.views import MethodView
+from marshmallow import ValidationError
+import requests  # type: ignore
+
+# khulnasoft-lab Libraries
+from api.config import STATIC_GEN_URL, TEMPLATE_BUCKET, logger
+from api.manager import TemplateManager
+from api.schemas.template_schema import TemplateSchema
+from utils.validator import validate_data
+
+template_manager = TemplateManager()
+
+
+class TemplatesView(MethodView):
+    """TemplatesView."""
+
+    def get(self):
+        """Get all templates."""
+        return jsonify(template_manager.all())
+
+    def post(self):
+        """Create new template."""
+        rvalues = []
+        name = ""
+        for f in request.files.getlist("zip"):
+            if not f.filename.endswith(".zip") or " " in f.filename:
+                continue
+            name = f.filename[:-4]
+            try:
+                validate_data({"name": name}, TemplateSchema)
+            except ValidationError:
+                continue
+            url_escaped_name = urllib.parse.quote_plus(name)
+            staticgen_resp = requests.post(
+                f"{STATIC_GEN_URL}/template/?template_name={url_escaped_name}",
+                files={"zip": (f"{f.filename}", f)},
+            )
+
+            # remove temp files
+            shutil.rmtree(f"tmp/{url_escaped_name}/", ignore_errors=True)
+
+            try:
+                staticgen_resp.raise_for_status()
+            except requests.exceptions.HTTPError:
+                logger.error(staticgen_resp.text)
+                return jsonify({"error": staticgen_resp.text}), 400
+
+            post_data = {
+                "name": name,
+                "s3_url": f"{TEMPLATE_BUCKET}.s3.amazonaws.com/{name}/",
+                "is_approved": False,
+                "is_go_template": staticgen_resp.json()["is_go_template"],
+            }
+
+            if g.is_admin:
+                post_data["is_approved"] = True
+
+            existing_template = template_manager.get(filter_data={"name": name})
+
+            if existing_template:
+                template_manager.update(
+                    document_id=existing_template["_id"], data=post_data
+                )
+            else:
+                template_manager.save(post_data)
+
+            rvalues.append(post_data)
+
+        return jsonify(rvalues, 200)
+
+
+class TemplateView(MethodView):
+    """TemplateView."""
+
+    def get(self, template_id):
+        """Get template details."""
+        template = template_manager.get(document_id=template_id)
+        return jsonify(template)
+
+    def delete(self, template_id):
+        """Delete template."""
+        if not g.is_admin:
+            return jsonify({"error": "Only admins may delete templates."}), 400
+
+        template = template_manager.get(document_id=template_id)
+
+        template_name = template["name"]
+        resp = requests.delete(
+            f"{STATIC_GEN_URL}/template/?template_name={template_name}"
+        )
+
+        try:
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            return jsonify({"error": str(e)})
+
+        return jsonify(template_manager.delete(document_id=template_id))
+
+
+class TemplateContentView(MethodView):
+    """TemplateContentView."""
+
+    def get(self, template_id):
+        """Download template."""
+        template = template_manager.get(document_id=template_id)
+        resp = requests.get(
+            f"{STATIC_GEN_URL}/template/?template_name={template['name']}"
+        )
+
+        try:
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            return jsonify({"error": str(e)})
+
+        # Create buffer
+        buffer = io.BytesIO()
+        buffer.write(resp.content)
+        buffer.seek(0)
+
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name=f"{template['name']}.zip",
+            mimetype="application/zip",
+        )
+
+
+class TemplateAttributesView(MethodView):
+    """TemplateKeysView."""
+
+    def get(self):
+        """Get list of keys for template context."""
+        fake = Faker()
+
+        return jsonify(
+            {
+                "StreetAddress": fake.street_address(),
+                "City": fake.city(),
+                "CompanyName": "",
+                "Email": "",
+                "Phone": fake.numerify(text="1-%##-###-####"),
+                "State": fake.state(),
+                "ZipCode": fake.zipcode(),
+            }
+        )
+
+
+class TemplateApprovalView(MethodView):
+    """Template approval view."""
+
+    def get(self, template_id):
+        """Approve a template pending for review."""
+        template = template_manager.get(document_id=template_id)
+
+        if template.get("is_approved", False):
+            return jsonify({"error": "This template is already approved"}), 400
+
+        return jsonify(
+            template_manager.update(document_id=template_id, data={"is_approved": True})
+        )
+
+    def delete(self, template_id):
+        """Disapprove a previously approved template."""
+        template = template_manager.get(document_id=template_id)
+
+        if not template.get("is_approved", True):
+            return jsonify({"error": "This template is not yet approved"}), 400
+
+        return jsonify(
+            template_manager.update(
+                document_id=template_id, data={"is_approved": False}
+            )
+        )

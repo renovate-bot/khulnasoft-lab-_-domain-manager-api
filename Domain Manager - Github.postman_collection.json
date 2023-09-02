@@ -1,0 +1,1126 @@
+{
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "info": {
+    "_postman_id": "7f8eb9a0-ab13-4495-8ecb-008bd3d85c84",
+    "name": "Domain Manager - Github",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "name": "Upload template zipped files",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "zip",
+                  "src": "/C:/Users/WILSZS/Repos/go_templates/template.zip",
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "template",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "category",
+                  "value": "pesticidetest"
+                }
+              ],
+              "raw": "localhost:8000/template/?category=pesticidetest"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload website zipped files",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "zip",
+                  "src": "/C:/Users/WILSZS/Repos/go_templates/pesticide/pesticide.zip",
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "website",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "domain",
+                  "value": "blah.com"
+                }
+              ],
+              "raw": "localhost:8000/website/?domain=blah.com"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete template",
+          "request": {
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "template",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "category",
+                  "value": "pesticide"
+                }
+              ],
+              "raw": "localhost:8000/template/?category=pesticide"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download template",
+          "request": {
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "template",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "category",
+                  "value": "pesticide"
+                }
+              ],
+              "raw": "localhost:8000/template/?category=pesticide"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Download website",
+          "request": {
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "website",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "domain",
+                  "value": "blah.com"
+                }
+              ],
+              "raw": "localhost:8000/website/?domain=blah.com"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate s3 website from template",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\n  \"description\": \"I just got uploaded\",\n  \"domain\": \"www.spokanepestservices.com\",\n  \"email\": \"spokane@mypestcompany.com\",\n  \"name\": \"My Spokane Pest Services\",\n  \"phone\": \"661-456-7890\"\n}\n"
+            },
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "generate",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "category",
+                  "value": "pesticidetest"
+                },
+                {
+                  "key": "domain",
+                  "value": "pesttest.com"
+                }
+              ],
+              "raw": "localhost:8000/generate/?category=pesticidetest&domain=pesttest.com"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete website",
+          "request": {
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "localhost"
+              ],
+              "path": [
+                "website",
+                ""
+              ],
+              "port": "8000",
+              "query": [
+                {
+                  "key": "category",
+                  "value": "pesticide"
+                },
+                {
+                  "key": "domain",
+                  "value": "mypestcompany.com"
+                }
+              ],
+              "raw": "localhost:8000/website/?category=pesticide&domain=mypestcompany.com"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Staticgen endpoints"
+    },
+    {
+      "name": "ApplicationsView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "applications",
+            ""
+          ],
+          "raw": "{{base_url}}/api/applications/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ApplicationsView - Post",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\"name\": \"test\"}"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "applications",
+            ""
+          ],
+          "raw": "{{base_url}}/api/applications/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ApplicationView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "application",
+            "{{application_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/application/{{application_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ApplicationView - Put",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\"name\": \"newtest\"}"
+        },
+        "header": [],
+        "method": "PUT",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "application",
+            "{{application_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/application/{{application_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ApplicationView - Delete",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          },
+          "raw": ""
+        },
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "application",
+            "{{application_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/application/{{application_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CategoriesView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "categories",
+            ""
+          ],
+          "raw": "{{base_url}}/api/categories/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CategoryCheckView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "check",
+            ""
+          ],
+          "query": [
+            {
+              "key": "domain",
+              "value": "example.com"
+            }
+          ],
+          "raw": "{{base_url}}/api/check/?domain=example.com"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "EmailAddressView - Get - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "generate-email-address",
+            ""
+          ],
+          "raw": "{{base_url}}/api/generate-email-address/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "HostedZonesView - Delete - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "generate-dns",
+            ""
+          ],
+          "raw": "{{base_url}}/api/generate-dns/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "HostedZonesView - Post - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "generate-dns",
+            ""
+          ],
+          "raw": "{{base_url}}/api/generate-dns/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ProxiesView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "proxies",
+            ""
+          ],
+          "raw": "{{base_url}}/api/proxies/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ProxiesView - Post - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "proxies",
+            ""
+          ],
+          "raw": "{{base_url}}/api/proxies/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ProxyView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "proxy",
+            "{{proxy_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/proxy/{{proxy_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ProxyView - Put - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "PUT",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "proxy",
+            "{{proxy_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/proxy/{{proxy_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ProxyView - Delete - Needs Rework",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "proxy",
+            "{{proxy_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/proxy/{{proxy_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TemplatesView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "templates",
+            ""
+          ],
+          "raw": "{{base_url}}/api/templates/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TemplatesView - Post",
+      "request": {
+        "body": {
+          "formdata": [
+            {
+              "key": "zip",
+              "src": "/C:/Users/WILSZS/Repos/go_templates/template.zip",
+              "type": "file"
+            },
+            {
+              "key": "",
+              "src": [],
+              "type": "file"
+            }
+          ],
+          "mode": "formdata"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "templates",
+            ""
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "demo"
+            }
+          ],
+          "raw": "{{base_url}}/api/templates/?category=demo"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TemplateView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "template",
+            "{{template_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/template/{{template_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TemplateView - Delete",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "template",
+            "{{template_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/template/{{template_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TemplateKeysView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "templates",
+            "keys",
+            ""
+          ],
+          "raw": "{{base_url}}/api/templates/keys/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainsView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domains",
+            ""
+          ],
+          "raw": "{{base_url}}/api/domains/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainsView - Post",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\"name\": \"inltest.com\"}"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domains",
+            ""
+          ],
+          "raw": "{{base_url}}/api/domains/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainView - Get",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainView - Put",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{}"
+        },
+        "header": [],
+        "method": "PUT",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainView - Delete",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            ""
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainContentView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "content"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/content"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainContentView - Post",
+      "request": {
+        "body": {
+          "formdata": [
+            {
+              "key": "zip",
+              "src": "/C:/Users/WILSZS/Repos/go_templates/template.zip",
+              "type": "file"
+            }
+          ],
+          "mode": "formdata"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "content"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/content"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainContentView - Delete",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "content"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/content"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainGenerateView - Post",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\r\n  \"description\": \"I just got uploaded\",\r\n  \"domain\": \"www.spokanepestservices.com\",\r\n  \"email\": \"spokane@mypestcompany.com\",\r\n  \"name\": \"My Spokane Pest Services\",\r\n  \"phone\": \"661-456-7890\"\r\n}\r\n"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "generate"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "pesticide"
+            }
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/generate?category=pesticide"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainRedirectView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "redirect"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/redirect"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainRedirectView - Post",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\"subdomain\": \"demo\", \"redirect_url\": \"microsoft.com\"}"
+        },
+        "header": [],
+        "method": "POST",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "redirect"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/redirect"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainRedirectView - Put",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          },
+          "raw": "{\"subdomain\": \"demo\", \"redirect_url\": \"microsoft.com\"}"
+        },
+        "header": [],
+        "method": "PUT",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "redirect"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/redirect"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainRedirectView - Delete",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "redirect"
+          ],
+          "query": [
+            {
+              "key": "subdomain",
+              "value": "demo"
+            }
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/redirect?subdomain=demo"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainLaunchView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "launch"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/launch"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainLaunchView - Delete",
+      "request": {
+        "header": [],
+        "method": "DELETE",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "launch"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/launch"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainRecordView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "records"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/records"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DomainCategorizeView - Get",
+      "request": {
+        "header": [],
+        "method": "GET",
+        "url": {
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "domain",
+            "{{domain_id}}",
+            "categorize"
+          ],
+          "raw": "{{base_url}}/api/domain/{{domain_id}}/categorize"
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "api_key",
+      "value": "changeme"
+    },
+    {
+      "key": "template_id",
+      "value": "changeme"
+    },
+    {
+      "key": "application_id",
+      "value": "changeme"
+    },
+    {
+      "key": "domain_id",
+      "value": "changeme"
+    },
+    {
+      "key": "proxy_id",
+      "value": "changeme"
+    }
+  ]
+}
