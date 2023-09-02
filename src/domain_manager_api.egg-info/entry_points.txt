@@ -1,0 +1,2 @@
+[console_scripts]
+dm-api = api.main
