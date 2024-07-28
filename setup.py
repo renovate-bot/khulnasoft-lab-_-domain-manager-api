@@ -97,7 +97,7 @@ setup(
         "gunicorn==20.1.0",
         "marshmallow==3.15.0",
         "mongomock==4.0.0",
-        "pymongo==4.1.1",
+        "pymongo==4.6.3",
         "requests==2.31.0",
         "validators==0.20.0",
     ],
