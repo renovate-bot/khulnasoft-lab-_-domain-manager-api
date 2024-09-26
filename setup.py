@@ -98,7 +98,7 @@ setup(
         "marshmallow==3.15.0",
         "mongomock==4.0.0",
         "pymongo==4.1.1",
-        "requests==2.31.0",
+        "requests==2.32.2",
         "validators==0.20.0",
     ],
     extras_require={
